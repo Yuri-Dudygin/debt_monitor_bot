@@ -14,12 +14,22 @@
     /all
         вывод информации по всем задолженностям автора сообщения
 '''
+import logging
+import time
 
 from MyDebtBot import MyDebtBot
 
 
 # Запуск бота
 if __name__ == "__main__":
-    new_bot = MyDebtBot()
-    print('поехали')
-    new_bot.bot.polling(none_stop=True)
+    i = 0
+    while True:
+        try:
+            i += 1
+            new_bot = MyDebtBot()
+            print('-------------ПОЕХАЛИ--------------')
+            print(f'-------------Запуск #{i}')
+            new_bot.bot.polling(none_stop=True)
+        except Exception as e:
+            logging.error(f"Произошла ошибка: {e}")
+            time.sleep(5)  # Ожидание перед повторным запуском

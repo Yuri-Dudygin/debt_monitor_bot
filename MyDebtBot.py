@@ -93,10 +93,22 @@ class MyDebtBot:
 
     def send_welcome_to_all_chats(self):
         '''Функция для отправки стартового сообщения во все чаты'''
+        
         welcome_message = "Бот перезапущен"
         for chat_id in self.chat_ids:
             try:
-                self.bot.send_message(chat_id, welcome_message)
+                chat_title = self.bot.get_chat(chat_id).title
+                print(chat_title)
+                if chat_title == 'ttttttttttttttt':
+                    try:
+                        self.bot.send_message(chat_id, welcome_message)
+                    except ApiTelegramException as e:
+                        if e.error_code == 403 and "bot was kicked from the supergroup chat" in e.description:
+                            print(
+                                f"Ошибка: Бот был удален из чата {chat_id}. Сообщение не отправлено.")
+                            self.remove_chat_id_from_file(chat_id)
+                        else:
+                            print(f"Произошла ошибка: {e}")
             except ApiTelegramException as e:
                 if e.error_code == 403 and "bot was kicked from the supergroup chat" in e.description:
                     print(
@@ -104,6 +116,7 @@ class MyDebtBot:
                     self.remove_chat_id_from_file(chat_id)
                 else:
                     print(f"Произошла ошибка: {e}")
+
 
     def get_user(self, message, username):
         '''Поиск юзера по его @username (не работает!)'''

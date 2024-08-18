@@ -1,4 +1,14 @@
-'''Телеграм бот для учета долгов участников чата'''
+'''
+Телеграм бот для учета долгов участников чата
+
+Запуск на raspbery pi:
+Открыть файл rc.local стокой:
+sudo nano /etc/rc.local
+Перед exit 0 добавить строчку
+su - pi -c 'source /home/pi/Python_dev/Telegram_debt_bot/myenv/bin/activate && python /home/pi/Python_dev/Telegram_debt_bot/Main.py &'
+Замените отрывок /home/pi/Python_dev/Telegram_debt_bot на ваш путь, если у вас
+другой путь к расположению скрипта
+'''
 
 # import csv
 import os
@@ -12,9 +22,20 @@ CHAT_IDS_FILE = 'chat_ids.txt'
 
 p = print
 
+def set_working_directory():
+    """Устанавливает рабочую директорию на путь к скрипту."""
+    # Получаем путь к директории, где находится этот скрипт
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Устанавливаем рабочую директорию на этот путь
+    # Это нужно для случая
+    # когда программа запускается из файла rc.local в raspbery pi
+    os.chdir(script_dir)
+
+
 
 def get_chat_ids_file():
     '''Путь к файлу chat_ids'''
+    set_working_directory() # установка правильных относительных путей
     folder_path = "data"
     # Проверяем, существует ли папка
     if not os.path.exists(folder_path):
@@ -230,6 +251,7 @@ class MyDebtBot:
     @staticmethod
     def get_path(chat_id):
         '''Путь к файлу csv'''
+        set_working_directory() # установка правильных относительных путей
         directory = 'data'
         # Убедимся, что папка существует
         if not os.path.exists(directory):
